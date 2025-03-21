@@ -1,0 +1,61 @@
+<div class="paint-container">
+  <div class="toolbar">
+    <div class="tool-group">
+      <button (click)="setTool('brush')" [class.active]="currentTool === 'brush'">🖌️ Brush</button>
+      <button (click)="setTool('eraser')" [class.active]="currentTool === 'eraser'">⌫ Eraser</button>
+      <!-- <button (click)="setTool('text')" [class.active]="currentTool === 'text'">Text</button> -->
+    </div>
+
+    <div class="tool-group">
+     <!-- Instead of ngModel, use value and (input) event binding -->
+     <input type="color" [value]="brushColor" (input)="onColorChange($event)" />
+     <input type="range" [value]="brushSize" (input)="onSizeChange($event)" min="1" max="50" />     
+      <span>Size: {{brushSize}}px</span>
+    </div>
+
+    <div class="tool-group">
+      <button (click)="undo()" [disabled]="!canUndo">↩️ Undo</button>
+      <button (click)="redo()" [disabled]="!canRedo">↪️ Redo</button>
+      <button (click)="clearCanvas()">🗑️ Clear</button>
+      <button (click)="downloadCanvas()">💾 Save Image</button>
+      <button (click)="convertCanvasToPDF()">📄 Download as PDF</button>
+      <button (click)="saveCanvasData()">💾 Save Canvas Data</button> <!-- Button to save canvas -->
+    </div>
+  </div>
+
+  <!-- Drawing canvas -->
+  <canvas #canvas (mousedown)="startDrawing($event)" (mousemove)="draw($event)" (mouseup)="stopDrawing()" (mouseleave)="stopDrawing()"></canvas>
+
+  <!-- Display saved data as thumbnails below the drawing tools -->
+  <div *ngIf="canvasDataList.length > 0" class="saved-data-preview">
+    <h2>Saved Canvas Data</h2>
+    <div class="saved-images">
+      <div *ngFor="let data of canvasDataList; let i = index" class="saved-image-item">
+        <img [src]="data.imgData" alt="Saved Drawing {{i + 1}}" width="300" height="auto" loading="lazy" />
+        <p>Saved on: {{ data.timestamp }}</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Show message if no saved data -->
+  <div *ngIf="canvasDataList.length === 0">
+    <p>No saved data found.</p>
+  </div>
+  
+  <!-- Table to display saved canvas data -->
+  <!-- <h2>Saved Canvas Data (Full Details)</h2>
+  <table>
+    <thead>
+      <tr>
+        <th>Timestamp</th>
+        <th>Canvas Image</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let data of canvasDataList">
+        <td>{{ data.timestamp }}</td>
+        <td><img [src]="data.imgData" alt="Canvas Image" width="100"></td>
+      </tr>
+    </tbody>
+  </table> -->
+</div>
